@@ -1,0 +1,20 @@
+#!/bin/bash
+POD=$(kubectl get pods -A | grep etcd | cut -d " " -f 5)
+POD=$(kubectl describe pods/$POD -n kube-system | grep -e "\-\-advertise" -e "\-\-cert\-file" -e "\-\-key\-file" -e "\-\-trusted\-ca\-file" | sed 's/$/ \\/g; s/\-\-advertise\-client\-urls/\-\-endpoints/g; s/\-\-trusted\-ca\-file/\-\-cacert/g; s/\-\-cert\-file/\-\-cert/g; s/\-\-key\-file/\-\-key/g')
+echo "====================================================
+**To bakcup**
+sudo ETCDCTL_API=3 etcdctl \\
+$POD
+      snapshot save $1
+====================================================
+**To check the status**
+sudo ETCDCTL_API=3 etcdctl --write-out=table snapshot status $(date \"+%Y.%m.%d-%H.%M.%S\")-$1
+====================================================
+**To restore it**
+sudo ETCDCTL_API=3 etcdctl snapshot restore $(date \"+%Y.%m.%d-%H.%M.%S\")-$1
+====================================================
+**To use a specific data directory for the restore**
+sudo ETCDCTL_API=3 etcdctl --data-dir $2 snapshot restore $(date \"+%Y.%m.%d-%H.%M.%S\")-$1
+===================================================="
+
+
