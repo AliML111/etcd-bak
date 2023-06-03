@@ -1,17 +1,19 @@
 #!/bin/bash
 
 #################################################
-#					 		      #
-#					                  #
-# 	       Developed by Ali M	        	#
-#						            #
-#	 His Email: gameali774@gmail.com	      #
-#						            #
-#	   He is too lazy to be true!		      #
-#						            #
-#						            #
-#						            #
+#						#
+# 	       					#
+#						#
+# 	       Developed by Ali M		#
+#						#
+#	 His Email: gameali774@gmail.com	#
+#						#
+#	   He is too lazy to be true!		#
+#						#
+#						#
+#						#
 #################################################
+
 
 POD=$(kubectl get pods -A | grep etcd | cut -d " " -f 5)
 POD=$(kubectl describe pods/$POD -n kube-system | grep -e "\-\-advertise" -e "\-\-cert\-file" -e "\-\-key\-file" -e "\-\-trusted\-ca\-file" | sed 's/$/ \\/g; s/\-\-advertise\-client\-urls/\-\-endpoints/g; s/\-\-trusted\-ca\-file/\-\-cacert/g; s/\-\-cert\-file/\-\-cert/g; s/\-\-key\-file/\-\-key/g')
